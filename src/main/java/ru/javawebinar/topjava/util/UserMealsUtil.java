@@ -3,11 +3,11 @@ package ru.javawebinar.topjava.util;
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.model.UserMealWithExcess;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class UserMealsUtil {
     public static void main(String[] args) {
@@ -28,8 +28,27 @@ public class UserMealsUtil {
     }
 
     public static List<UserMealWithExcess> filteredByCycles(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
-        // TODO return filtered list with excess. Implement by cycles
-        return null;
+        List<UserMeal> filteredList = new ArrayList<>();
+        for (UserMeal currentMeal : meals){
+            if (TimeUtil.isBetweenHalfOpen(currentMeal.getDateTime().toLocalTime(), startTime, endTime)){
+                filteredList.add(currentMeal);
+            }
+        }
+
+                Map<LocalDate, Integer> valueCaloriesForDate = new HashMap<>();
+        for (UserMeal currentMeal : filteredList){
+            valueCaloriesForDate.merge(currentMeal.getDateTime().toLocalDate(), currentMeal.getCalories(), Integer::sum);
+        }
+
+        List<UserMealWithExcess> filteredListWithExcess = new ArrayList<>();
+        for (UserMeal currentMeal : filteredList){
+          if (valueCaloriesForDate.get(currentMeal.getDateTime().toLocalDate())>caloriesPerDay){
+              filteredListWithExcess.add(new UserMealWithExcess(currentMeal.getDateTime(), currentMeal.getDescription(), currentMeal.getCalories(), true));
+          } else{
+              filteredListWithExcess.add(new UserMealWithExcess(currentMeal.getDateTime(), currentMeal.getDescription(), currentMeal.getCalories(), false));
+          }
+        }
+        return filteredListWithExcess;
     }
 
     public static List<UserMealWithExcess> filteredByStreams(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
