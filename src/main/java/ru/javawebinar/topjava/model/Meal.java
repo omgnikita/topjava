@@ -20,9 +20,11 @@ public class Meal {
         this.description = description;
         this.calories = calories;
     }
+
     public Integer getId() {
         return id;
     }
+
     public LocalDateTime getDateTime() {
         return dateTime;
     }

@@ -22,17 +22,16 @@ public class MealsServlet extends HttpServlet {
         MealsContainer.getContainer();
 
         String action = req.getParameter("action");
-        if(action==null){
+        if (action == null) {
             action = "";
             req.setAttribute("ml", MealsContainer.getAllMealsTo());
             req.getRequestDispatcher("/meals.jsp").forward(req, resp);
-        } else if (action.equalsIgnoreCase("delete")){
+        } else if (action.equalsIgnoreCase("delete")) {
             int mealId = Integer.parseInt(req.getParameter("mealId"));
             MealsContainer.delete(mealId);
             req.setAttribute("ml", MealsContainer.getAllMealsTo());
             req.getRequestDispatcher("/meals.jsp").forward(req, resp);
         }
-
     }
 
 

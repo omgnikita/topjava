@@ -14,6 +14,7 @@ public class MealsContainer {
 
     private static MealsContainer mealsContainer;
 
+
     private MealsContainer() {
     }
 
