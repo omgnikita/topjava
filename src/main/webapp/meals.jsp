@@ -36,11 +36,11 @@
                 <%--            <td><input type="button" value="Update" onclick="window.location.href = ">--%>
             <td><a href="meals?action=edit&mealId=<c:out value="${ml.id}"/>">Update</a></td>
             <td><a href="meals?action=delete&mealId=<c:out value="${ml.id}"/>">Delete</a></td>
-                <%--            <td><form method="post" action="<c:url value="/meals"/>" >Users</form></td>--%>
+                <%--            <td><form method="post" action="<c:url value="/meals"/>" >Meals</form></td>--%>
         </tr>
     </c:forEach>
     </tbody>
 </table>
-<p><a href="meals?action=insert">Add User</a></p>
+<p><a href="meals?action=insert">Add Meal</a></p>
 </body>
 </html>
