@@ -13,7 +13,6 @@
 <table border=1>
     <thead>
     <tr>
-        <th>Id</th>
         <th>Date</th>
         <th>Description</th>
         <th>Calories</th>
@@ -21,22 +20,14 @@
     </thead>
     <tbody>
     <c:forEach items="${ml}" var="ml">
-        <tr
-                <c:if test="${ml.excess}">
-                    style="color: red"
-                </c:if>
-                <c:if test="${!ml.excess}">
-                    style="color: green"
-                </c:if>>
-            <td><c:out value="${ml.id}"/></td>
+        <tr style = "color: ${!ml.excess ? "green" : "red"}">
+            <td>${ml.id}</td>
             <td><fmt:parseDate value="${ml.dateTime}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedDateTime" type="both"/>
                 <fmt:formatDate pattern="dd.MM.yyyy HH:mm" value="${ parsedDateTime }"/></td>
-            <td><c:out value="${ml.description}"/></td>
-            <td><c:out value="${ml.calories}"/></td>
-                <%--            <td><input type="button" value="Update" onclick="window.location.href = ">--%>
+            <td>${ml.description}</td>
+            <td>${ml.calories}</td>
             <td><a href="meals?action=edit&mealId=<c:out value="${ml.id}"/>">Update</a></td>
             <td><a href="meals?action=delete&mealId=<c:out value="${ml.id}"/>">Delete</a></td>
-                <%--            <td><form method="post" action="<c:url value="/meals"/>" >Meals</form></td>--%>
         </tr>
     </c:forEach>
     </tbody>

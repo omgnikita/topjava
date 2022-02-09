@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
+import ru.javawebinar.topjava.model.CrudInterface;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealsContainer;
 
@@ -17,38 +18,36 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class MealsServlet extends HttpServlet {
     private static String INSERT_OR_EDIT = "/addMeal.jsp";
     private static String LIST_MEAL = "/meals.jsp";
-
-    private static final Logger LOG = getLogger(MealsServlet.class);
+    CrudInterface dao = new MealsContainer();
+    private static final Logger log = getLogger(MealsServlet.class);
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        LOG.debug("redirect to meals");
-
-        MealsContainer.getContainer();
+//        log.debug("redirect to meals");
 
         String forward = "";
         String action = req.getParameter("action");
         if (action == null) {
             action = "";
-            req.setAttribute("ml", MealsContainer.getAllMealsTo());
+            req.setAttribute("ml", dao.getAllMealsTo());
             forward = LIST_MEAL;
         } else if (action.equalsIgnoreCase("delete")) {
             int mealId = Integer.parseInt(req.getParameter("mealId"));
-            MealsContainer.delete(mealId);
-            forward = LIST_MEAL;
-            req.setAttribute("ml", MealsContainer.getAllMealsTo());
+            dao.delete(mealId);
+            resp.sendRedirect("meals");
         } else if (action.equalsIgnoreCase("edit")) {
             int mealId = Integer.parseInt(req.getParameter("mealId"));
-            Meal meal = MealsContainer.getMealById(mealId);
+            Meal meal = dao.getMealById(mealId);
             forward = INSERT_OR_EDIT;
             req.setAttribute("meal", meal);
         } else if (action.equalsIgnoreCase("insert")) {
             forward = INSERT_OR_EDIT;
             req.setAttribute("meal", null);
         } else {
-            req.setAttribute("ml", MealsContainer.getAllMealsTo());
+            req.setAttribute("ml", dao.getAllMealsTo());
             forward = LIST_MEAL;
         }
+        if (!action.equalsIgnoreCase("delete"))
         req.getRequestDispatcher(forward).forward(req, resp);
     }
 
@@ -66,17 +65,16 @@ public class MealsServlet extends HttpServlet {
         String mealId = req.getParameter("mealId");
         if (mealId == null || mealId.isEmpty()) {
             Meal meal = new Meal(MealsContainer.count++, localDateTime, description, calories);
-            MealsContainer.add(meal);
+            dao.add(meal);
         } else {
             int id = Integer.parseInt(mealId);
-            Meal meal = MealsContainer.getMealById(id);
+            Meal meal = dao.getMealById(id);
             meal.setCalories(calories);
             meal.setDateTime(localDateTime);
             meal.setDescription(description);
-            MealsContainer.update(meal);
+            dao.update(meal);
         }
-        req.setAttribute("ml", MealsContainer.getAllMealsTo());
+        req.setAttribute("ml", dao.getAllMealsTo());
         req.getRequestDispatcher("/meals.jsp").forward(req, resp);
     }
-
 }

@@ -11,23 +11,23 @@ import java.util.stream.Collectors;
 
 import static ru.javawebinar.topjava.util.MealsUtil.createTo;
 
-public class MealsContainer {
+public class MealsContainer implements CrudInterface{
 
-    private static MealsContainer mealsContainer;
-
-    private MealsContainer() {
-    }
-
-    public static MealsContainer getContainer() {
-        if (mealsContainer == null) {
-            mealsContainer = new MealsContainer();
-        }
-        return mealsContainer;
-    }
+//    private static MealsContainer mealsContainer;
+//
+//    private MealsContainer() {
+//    }
+//
+//    public static MealsContainer getContainer() {
+//        if (mealsContainer == null) {
+//            mealsContainer = new MealsContainer();
+//        }
+//        return mealsContainer;
+//    }
 
     public static int count = 1;
 
-    List<Meal> meals = new ArrayList<Meal>(
+    static List<Meal> meals = new ArrayList<Meal>(
             Arrays.asList(
                     new Meal(count++, LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500),
                     new Meal(count++, LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000),
@@ -49,27 +49,26 @@ public class MealsContainer {
                 .collect(Collectors.toList());
     }
 
-    public static void delete(int id) {
-        mealsContainer.meals.removeIf(meal -> meal.getId() == id);
-//        mealsContainer.meals.remove(mealsContainer.meals.stream().filter(meal -> meal.getId() == id).findFirst());
+    public void delete(int id) {
+        meals.removeIf(meal -> meal.getId() == id);
     }
 
-    public static List<MealTo> getAllMealsTo() {
-        return MealsContainer.mealTos(mealsContainer.meals);
+    public List<MealTo> getAllMealsTo() {
+        return MealsContainer.mealTos(meals);
     }
 
-    public static Meal getMealById(int id) {
-        return mealsContainer.meals.stream().filter(meal -> meal.getId() == id).findFirst().orElse(null);
+    public Meal getMealById(int id) {
+        return meals.stream().filter(meal -> meal.getId() == id).findFirst().orElse(null);
     }
 
-    public static void add(Meal meal) {
-        mealsContainer.meals.add(meal);
+    public void add(Meal meal) {
+        meals.add(meal);
     }
 
-    public static void update(Meal meal) {
-        for (Meal mealUpd : mealsContainer.meals) {
+    public void update(Meal meal) {
+        for (Meal mealUpd : meals) {
             if (mealUpd.getId().equals(meal.getId()))
-                mealsContainer.meals.set(mealsContainer.meals.indexOf(mealUpd), meal);
+               meals.set(meals.indexOf(mealUpd), meal);
         }
     }
 }
