@@ -14,27 +14,38 @@ public class InMemoryMealRepository implements MealRepository {
     private final AtomicInteger counter = new AtomicInteger(0);
 
     {
-        MealsUtil.meals.forEach(this::save);
+        for (Meal meal : MealsUtil.meals) {
+            save(meal, 1);
+        }
     }
 
     @Override
-    public Meal save(Meal meal) {
+    public Meal save(Meal meal, int userId) {
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
+            meal.setUserId(userId);
             repository.put(meal.getId(), meal);
             return meal;
         }
-        // handle case: update, but not present in storage
-        return repository.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
+        if (repository.get(meal.getId()) == null || meal.getUserId() != userId) {
+            return null;
+        }
+        return repository.replace(meal.getId(), meal);
     }
 
     @Override
-    public boolean delete(int id) {
+    public boolean delete(int id, int userId) {
+        if (repository.get(id) == null || repository.get(id).getUserId() != userId) {
+            return false;
+        }
         return repository.remove(id) != null;
     }
 
     @Override
-    public Meal get(int id) {
+    public Meal get(int id, int userId) {
+        if (repository.get(id) == null || repository.get(id).getUserId() != userId) {
+            return null;
+        }
         return repository.get(id);
     }
 
