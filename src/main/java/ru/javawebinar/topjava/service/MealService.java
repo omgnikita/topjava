@@ -33,8 +33,8 @@ public class MealService {
         return checkNotFoundWithId(repository.get(id, userId), id);
     }
 
-    public List<Meal> getAll() {
-        return repository.getAll();
+    public List<Meal> getAll(int userId) {
+        return repository.getAll(userId);
     }
 
 }
